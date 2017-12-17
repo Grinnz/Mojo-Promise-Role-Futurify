@@ -56,7 +56,7 @@ Mojo::Promise::Role::Futurify - Chain a Future from a Mojo::Promise
         my $err = $f->failure;
       }
     }
-  });
+  })->await;
 
 =head1 DESCRIPTION
 
