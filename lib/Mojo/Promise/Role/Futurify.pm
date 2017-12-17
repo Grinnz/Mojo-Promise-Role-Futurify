@@ -1,19 +1,78 @@
 package Mojo::Promise::Role::Futurify;
 
-use strict;
-use warnings;
+use Future::Mojo;
+use Scalar::Util;
+use Role::Tiny;
 
 our $VERSION = '0.001';
+
+requires qw(ioloop then);
+
+sub futurify {
+  my $self = shift;
+  my $f = Future::Mojo->new($self->ioloop);
+  Scalar::Util::weaken(my $weak_f = $f);
+  $self->then(sub { $weak_f->done(@_) if $weak_f; 1 },
+    sub { $weak_f->fail(@_) if $weak_f; 1 });
+  return $f;
+}
 
 1;
 
 =head1 NAME
 
-Mojo::Promise::Role::Futurify - Module abstract
+Mojo::Promise::Role::Futurify - Chain a Future from a Mojo::Promise
 
 =head1 SYNOPSIS
 
+  use Mojo::Promise;
+  
+  my $promise = Mojo::Promise->with_roles('+Futurify')->new;
+  my $future = $promise->futurify->on_ready(sub {
+    my $f = shift;
+    say $f->is_done ? 'Done' : 'Failed';
+  });
+  $promise->ioloop->timer(5 => sub { $promise->resolve });
+  $future->await;
+  
+  use Mojo::UserAgent;
+  my $ua = Mojo::UserAgent->new;
+  
+  # complicated way of doing $ua->get('https://example.com')
+  my $tx = $ua->get_p('https://example.com')->with_roles('+Futurify')->futurify->get;
+  
+  # using Future composition methods
+  my @futures;
+  foreach my $url (@urls) {
+    push @futures, $ua->get_p($url)->with_roles('+Futurify')->futurify;
+  }
+  
+  use Future;
+  Future->wait_all(@futures)->then(sub {
+    foreach my $f (@_) {
+      if ($f->is_done) {
+        my $tx = $f->get;
+      } elsif ($f->is_failed) {
+        my $err = $f->failure;
+      }
+    }
+  });
+
 =head1 DESCRIPTION
+
+L<Mojo::Promise::Role::Futurify> provides an interface to chain L<Future>
+objects from L<Mojo::Promise> objects.
+
+=head1 METHODS
+
+L<Mojo::Promise::Role::Futurify> composes the following methods.
+
+=head2 futurify
+
+  my $future = $promise->futurify;
+
+Returns a L<Future::Mojo> object that will become ready with success or failure
+when the L<Mojo::Promise> resolves or rejects.
 
 =head1 BUGS
 
@@ -33,3 +92,4 @@ This is free software, licensed under:
 
 =head1 SEE ALSO
 
+L<Mojo::Promise>, L<Future>, L<Future::Mojo>
