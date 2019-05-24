@@ -84,7 +84,7 @@ EOW
         "Dan Book <dbook\@cpan.org>"
       ],
       "dist_name" => "Mojo-Promise-Role-Futurify",
-      "dist_version" => "0.002",
+      "dist_version" => "v1.0.0",
       "license" => "artistic_2",
       "module_name" => "Mojo::Promise::Role::Futurify",
       "recursive_test_files" => 1,

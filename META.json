@@ -59,7 +59,7 @@
    "provides" : {
       "Mojo::Promise::Role::Futurify" : {
          "file" : "lib/Mojo/Promise/Role/Futurify.pm",
-         "version" : "0.002"
+         "version" : "v1.0.0"
       }
    },
    "release_status" : "stable",
@@ -75,7 +75,7 @@
       },
       "x_IRC" : "irc://irc.freenode.net/#mojo"
    },
-   "version" : "0.002",
+   "version" : "v1.0.0",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.030000"
@@ -269,7 +269,7 @@
                   "branch" : null,
                   "changelog" : "Changes",
                   "signed" : 0,
-                  "tag" : "0.002",
+                  "tag" : "v1.0.0",
                   "tag_format" : "%v",
                   "tag_message" : "%v"
                },
