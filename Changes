@@ -1,4 +1,5 @@
 {{$NEXT}}
+  - Update IRC metadata to libera.chat
 
 v1.0.0    2019-05-24 11:30:21 EDT
   - Avoid behavior broken in Mojolicious 8.15 in tests (#1)
